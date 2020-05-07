@@ -8,33 +8,25 @@ export function fetchList(query) {
   })
 }
 
-export function fetchArticle(id) {
+export function createProject(data) {
   return request({
-    url: '/vue-element-admin/article/detail',
-    method: 'get',
-    params: { id }
-  })
-}
-
-export function fetchPv(pv) {
-  return request({
-    url: '/vue-element-admin/article/pv',
-    method: 'get',
-    params: { pv }
-  })
-}
-
-export function createArticle(data) {
-  return request({
-    url: '/vue-element-admin/article/create',
+    url: '/project/save',
     method: 'post',
     data
   })
 }
 
-export function updateArticle(data) {
+export function updateProject(data) {
   return request({
-    url: '/vue-element-admin/article/update',
+    url: '/project/update',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteProject(data) {
+  return request({
+    url: '/project/update',
     method: 'post',
     data
   })
