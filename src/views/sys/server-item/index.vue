@@ -31,43 +31,98 @@
       style="width: 100%;"
     >
       <el-table-column
-        label="ID"
-        prop="id"
+        label="Ip地址"
+        prop="ipAddr"
         align="center"
-        width="80"
       >
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+          <span>{{ row.ipAddr }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="项目名" align="center">
+      <el-table-column label="hostName" align="center">
         <template slot-scope="{row}">
-          <el-tag>{{ row.projectName }}</el-tag>
+          <el-tag>{{ row.hostName }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="描述" align="center">
+      <el-table-column label="cpuName" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
+          <span>{{ row.cpuName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="CPU使用率" align="center">
+        <template slot-scope="{row}">
+          <el-progress
+            type="circle"
+            :width="50"
+            :percentage="Math.ceil( row.cpuRate) "
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="CPU核心" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.cpuCore }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="硬盘使用率" align="center">
+        <template slot-scope="{row}">
+          <el-progress
+            type="circle"
+            :width="50"
+            :percentage="Math.ceil( row.diskRate) "
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="diskRead" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.diskRead }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="diskWrite" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.diskWrite }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="内存使用率" align="center">
+        <template slot-scope="{row}">
+          <el-progress
+            type="circle"
+            :width="50"
+            :percentage="Math.ceil( row.ramRate) "
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="虚拟内存使用率" align="center">
+        <template slot-scope="{row}">
+          <el-progress
+            type="circle"
+            :width="50"
+            :percentage="Math.ceil( row.swapRate) "
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="平台版本" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.platformVersion }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="netWrite" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.netRead }}/{{ row.netWrite }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负载" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.load }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="启动时间" align="center">
+        <template slot-scope="{row}">
+          <span>{{ formatBootTime(row.uptime,"") }}</span>
         </template>
       </el-table-column>
       <el-table-column label="更新时间" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
+          <span>{{ row.timeStamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -119,13 +174,13 @@
 </template>
 
 <script>
-import { fetchList, deleteProject, createProject, updateProject } from '@/api/project'
+import { fetchList, deleteProject, createProject, updateProject } from '@/api/server-item'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
+import { parseTime, formatTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
-  name: 'Project',
+  name: 'ServerItem',
   components: { Pagination },
   directives: { waves },
   data() {
@@ -158,18 +213,21 @@ export default {
     }
   },
   created() {
+    setInterval(() => {
+      this.getList()
+    }, 5000)
     this.getList()
   },
   methods: {
     getList() {
       fetchList(this.listQuery).then(response => {
-        this.list = response.data.list
-        this.total = response.data.total
+        this.list = response.data
         this.listLoading = false
       })
     },
     handleFilter() {
       this.listQuery.page = 1
+
       this.getList()
     },
     handleModifyStatus(row, status) {
@@ -242,7 +300,9 @@ export default {
         })
       })
     },
-    formatJson(filterVal) {
+    formatBootTime(time) {
+      return formatTime(time)
+    }, formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
           return parseTime(v[j])

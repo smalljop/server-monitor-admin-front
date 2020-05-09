@@ -76,7 +76,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: {title: 'Dashboard', icon: 'dashboard', affix: true}
+        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -103,7 +103,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/profile/index'),
         name: 'Profile',
-        meta: {title: 'Profile', icon: 'user', noCache: true}
+        meta: { title: 'Profile', icon: 'user', noCache: true }
       }
     ]
   }
@@ -156,30 +156,36 @@ export const asyncRoutes = [
   //   ]
   // },
   {
-    path: '/project',
+    path: '/server-group',
     component: Layout,
-    redirect: '/project/page',
+    redirect: '/server-group/page',
     alwaysShow: true, // will always show the root menu
     name: 'Project',
     meta: {
-      title: '项目管理',
+      title: '服务器监控',
       icon: 'lock',
       roles: ['admin', 'editor'] // you can set roles in root nav
     },
     children: [
       {
         path: 'page',
-        component: () => import('@/views/sys/project'),
-        name: 'projectList',
+        component: () => import('@/views/sys/server-group'),
+        name: 'groupList',
         meta: {
-          title: '项目列表',
+          title: '组管理',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }, {
+        path: 'item',
+        component: () => import('@/views/sys/server-item'),
+        name: 'itemList',
+        meta: {
+          title: '客户端管理',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       }
     ]
   },
-
-
   /** when your routing map is too long, you can split it into small modules **/
   chartsRouter,
   {
@@ -188,18 +194,18 @@ export const asyncRoutes = [
     children: [
       {
         path: 'https://github.com/PanJiaChen/vue-element-admin',
-        meta: {title: 'External Link', icon: 'link'}
+        meta: { title: 'External Link', icon: 'link' }
       }
     ]
   },
 
   // 404 page must be placed at the end !!!
-  {path: '*', redirect: '/404', hidden: true}
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({y: 0}),
+  scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
 

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/project/list',
+    url: '/server/group/list',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function createProject(data) {
   return request({
-    url: '/project/save',
+    url: '/server/group/save',
     method: 'post',
     data
   })
@@ -18,16 +18,16 @@ export function createProject(data) {
 
 export function updateProject(data) {
   return request({
-    url: '/project/update',
+    url: '/server/group/update',
     method: 'post',
     data
   })
 }
 
-export function deleteProject(data) {
+export function deleteProject(id) {
   return request({
-    url: '/project/update',
+    url: '/server/group/delete',
     method: 'post',
-    data
+    data: { 'id': id }
   })
 }
